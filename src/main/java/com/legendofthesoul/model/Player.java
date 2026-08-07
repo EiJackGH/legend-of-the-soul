@@ -1,6 +1,10 @@
 package com.legendofthesoul.model;
 
-public class Player extends Entity {
+import java.io.Serializable;
+
+public class Player extends Entity implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int souls;
     private int level;
 
