@@ -26,7 +26,7 @@ public class GameEngine {
         this.player = SaveManager.loadGame();
 
         if (this.player == null) {
-            System.out.print("Enter your hero's name (or press Enter for '" + defaultName + "'): ");
+            System.out.print("What's your name? (or press Enter for '" + defaultName + "'): ");
             String name = scanner.nextLine().trim();
             if (name.isEmpty()) {
                 name = defaultName;
