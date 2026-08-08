@@ -1,42 +1,41 @@
 package com.legendofthesoul.engine;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.legendofthesoul.model.Player;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public class SaveManager {
-    private static final String SAVE_FILE = "savegame.dat";
+    private static final String SAVE_FILE = "savegame.json";
+    private static final ObjectMapper mapper = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT);
 
-    /**
-     * Serializes player state to local disk.
-     */
     public static boolean saveGame(Player player) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {
-            oos.writeObject(player);
-            System.out.println("💾 Progress successfully saved to " + SAVE_FILE);
+        try {
+            mapper.writeValue(new File(SAVE_FILE), player);
+            System.out.println("💾 Progress saved to " + SAVE_FILE);
             return true;
         } catch (IOException e) {
-            System.err.println("❌ Failed to save progress: " + e.getMessage());
+            System.err.println("❌ Failed to save game: " + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Deserializes player state from disk if present.
-     */
     public static Player loadGame() {
         File file = new File(SAVE_FILE);
         if (!file.exists()) {
-            System.out.println("⚠️ No save file found (" + SAVE_FILE + "). Starting fresh game.");
+            System.out.println("⚠️ No save file found. Starting fresh.");
             return null;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            Player loadedPlayer = (Player) ois.readObject();
-            System.out.println("📂 Loaded save file! Welcome back, " + loadedPlayer.getName() + ".");
-            return loadedPlayer;
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("❌ Failed to load save file (corrupted or incompatible): " + e.getMessage());
+        try {
+            Player player = mapper.readValue(file, Player.class);
+            System.out.println("📂 Loaded save profile for " + player.getName() + "!");
+            return player;
+        } catch (IOException e) {
+            System.err.println("❌ Failed to parse save file: " + e.getMessage());
             return null;
         }
     }
