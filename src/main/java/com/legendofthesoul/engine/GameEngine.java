@@ -35,6 +35,9 @@ public class GameEngine {
             System.out.println("\n✨ A new legend begins! Good luck, " + player.getName() + ".");
         }
 
+        // Register/update player instance in the CrashReporter
+        CrashReporter.setPlayer(this.player);
+
         gameLoop();
     }
 
