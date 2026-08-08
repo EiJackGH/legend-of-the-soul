@@ -1,14 +1,20 @@
 package com.legendofthesoul.engine;
 
+import com.legendofthesoul.model.Player;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 public class CrashReporter implements Thread.UncaughtExceptionHandler {
+    private static Player player;
 
     public static void register() {
         Thread.setDefaultUncaughtExceptionHandler(new CrashReporter());
+    }
+
+    public static void setPlayer(Player p) {
+        player = p;
     }
 
     @Override
@@ -21,6 +27,9 @@ public class CrashReporter implements Thread.UncaughtExceptionHandler {
             writer.println("=== LEGEND OF THE SOUL CRASH REPORT ===");
             writer.println("Timestamp: " + LocalDateTime.now());
             writer.println("Thread: " + t.getName());
+            if (player != null) {
+                writer.println("Player: " + player.getName());
+            }
             writer.println("Exception: " + e.toString());
             writer.println("\nStack Trace:");
             e.printStackTrace(writer);
